@@ -12,17 +12,19 @@ defmodule ListaDeMails do
       { :suscribir, pidSuscriptor } ->
         IO.puts "Se suscribió alguien"
         suscriptores = suscriptores ++ [ pidSuscriptor ]
-        loop({ suscriptores, consultas})
 
-      { :listar, pid } ->
+      { :listar_suscriptores, pid } ->
         send pid, suscriptores
-        loop({ suscriptores, consultas})
+
+      { :listar_consultas, pid } ->
+        send pid, consultas
 
       { :consultar, consulta, pidAlumno } ->
         IO.puts "Están consultando #{consulta}"
         consultas = consultas ++ [ { consulta, pidAlumno } ]
-        loop({ suscriptores, consultas})
     end
+
+    loop({ suscriptores, consultas})
   end
 end
 
