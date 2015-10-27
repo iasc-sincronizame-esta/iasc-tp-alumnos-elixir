@@ -22,6 +22,11 @@ defmodule ListaDeMails do
       { :consultar, consulta, pidAlumno } ->
         IO.puts "Están consultando #{consulta}"
         consultas = consultas ++ [ { consulta, pidAlumno } ]
+
+        Enum.each suscriptores, fn it ->
+          # TODO: validar que no sea el mismo
+          send it, { :notificacion_consulta, { consulta, pidAlumno } }
+        end
     end
 
     loop({ suscriptores, consultas})
@@ -40,10 +45,16 @@ defmodule Alumno do
       { :consultar, lista, consulta } ->
         send lista, { :consultar, consulta, self }
         loop()
+
+      { :notificacion_consulta, { consulta, pidAlumno } } ->
+        IO.puts "Se ve que alguien preguntó #{consulta}"
+        loop()
     end
   end
 end
 
 laLista = ListaDeMails.start()
-unAlumno = Alumno.start()
-send unAlumno, { :consultar, laLista, "¿Cuál es el sentido de la vida?" }
+alumnoPreguntador = Alumno.start()
+alumnoSuscriptor = Alumno.start()
+send laLista, { :suscribir, alumnoSuscriptor }
+send alumnoPreguntador, { :consultar, laLista, "¿Cuál es el sentido de la vida?" }
