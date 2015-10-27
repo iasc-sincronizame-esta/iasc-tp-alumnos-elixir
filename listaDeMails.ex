@@ -24,8 +24,9 @@ defmodule ListaDeMails do
         consultas = consultas ++ [ { consulta, pidAlumno } ]
 
         Enum.each suscriptores, fn it ->
-          # TODO: validar que no sea el mismo
-          send it, { :notificacion_consulta, { consulta, pidAlumno } }
+          if it != pidAlumno do
+            send it, { :notificacion_consulta, { consulta, pidAlumno } }
+          end
         end
     end
 
@@ -54,7 +55,8 @@ defmodule Alumno do
 end
 
 laLista = ListaDeMails.start()
-alumnoPreguntador = Alumno.start()
+alumnoPreguntadorYSuscriptor = Alumno.start()
 alumnoSuscriptor = Alumno.start()
 send laLista, { :suscribir, alumnoSuscriptor }
-send alumnoPreguntador, { :consultar, laLista, "¿Cuál es el sentido de la vida?" }
+send laLista, { :suscribir, alumnoPreguntadorYSuscriptor }
+send alumnoPreguntadorYSuscriptor, { :consultar, laLista, "¿Cuál es el sentido de la vida?" }
