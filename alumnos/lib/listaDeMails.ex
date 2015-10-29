@@ -103,9 +103,9 @@ alumnoSuscriptor = Alumno.start()
 send laLista, { :suscribir, alumnoPreguntadorYSuscriptor }
 send alumnoPreguntadorYSuscriptor, { :consultar, laLista, "¿Cuál es el sentido de la vida?" }
 
-docente = Docente.start()
-
 # ver qué mensajes hay y contestar alguno...
+
+docente = Docente.start()
 
 send laLista, { :listar_consultas, self }
 receive do
